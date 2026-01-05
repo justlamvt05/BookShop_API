@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -15,6 +17,9 @@ public class User {
         @Id
         @Column(name = "user_id", columnDefinition = "nvarchar(50)")
         private String userId;
+
+        @Column(name = "user_name", columnDefinition = "nvarchar(50)", nullable = false, unique = true)
+        private String userName;
 
         @Column(name = "first_name", columnDefinition = "nvarchar(100)", nullable = false)
         private String firstName;
@@ -40,6 +45,12 @@ public class User {
         @Enumerated(EnumType.STRING)
         @Column(length = 20)
         private EStatus status;
+
+        @ManyToMany(fetch = FetchType.LAZY)
+        @JoinTable(name = "user_roles",
+                joinColumns = @JoinColumn(name = "user_id"),
+                inverseJoinColumns = @JoinColumn(name = "role_id"))
+        private Set<Role> roles = new HashSet<>();
 
 
 }
