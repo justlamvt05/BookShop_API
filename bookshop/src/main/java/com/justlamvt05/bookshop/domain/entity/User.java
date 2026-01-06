@@ -48,7 +48,7 @@ public class User {
         @Column(length = 20)
         private EStatus status;
 
-        @ManyToOne(fetch = FetchType.LAZY)
+        @ManyToOne
         @JoinColumn(name = "role_id", nullable = false)
         private Role role;
 
