@@ -2,8 +2,7 @@ package com.justlamvt05.bookshop.domain.entity;
 
 import com.justlamvt05.bookshop.domain.entity.constraint.EStatus;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -11,6 +10,9 @@ import java.util.Set;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "TBL_USER")
 public class User {
@@ -46,11 +48,8 @@ public class User {
         @Column(length = 20)
         private EStatus status;
 
-        @ManyToMany(fetch = FetchType.LAZY)
-        @JoinTable(name = "user_roles",
-                joinColumns = @JoinColumn(name = "user_id"),
-                inverseJoinColumns = @JoinColumn(name = "role_id"))
-        private Set<Role> roles = new HashSet<>();
-
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "role_id", nullable = false)
+        private Role role;
 
 }

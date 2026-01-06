@@ -5,17 +5,13 @@ import com.justlamvt05.bookshop.security.config.CustomAccessDenied;
 import com.justlamvt05.bookshop.security.jwt.AuthTokenFilter;
 import com.justlamvt05.bookshop.security.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -47,14 +43,15 @@ public class WebSecurityConfig {
         //httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable()
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests ->
-                        authorizeRequests.requestMatchers("/api/auth/**","/hello", "/error", "/all").permitAll()
-                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                                .requestMatchers("/api/sale/**").hasRole("SELLER")
+                        authorizeRequests.requestMatchers("/auth/**","/hello", "/error", "/all").permitAll()
+//                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+//                                .requestMatchers("/api/sale/**").hasRole("SELLER")
                                 .anyRequest().authenticated())
 
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint(unauthorizedHandler)
                         .accessDeniedHandler(accessDenied)
+
                 )
                 .addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class).build();
     }
