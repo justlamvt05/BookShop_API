@@ -10,19 +10,13 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AdminUserRequest {
-
-    @NotBlank
-    private String userName;
+public class AdminUserRequestUpdate {
 
     @NotBlank
     private String password;
 
     @NotBlank
     private String email;
-
-    @NotBlank
-    private String phone;
 
     private String firstName;
     private String lastName;

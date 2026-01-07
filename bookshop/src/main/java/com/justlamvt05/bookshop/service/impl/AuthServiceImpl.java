@@ -53,13 +53,14 @@ public class AuthServiceImpl implements AuthService {
 
         /* ========= Create User ========= */
         User user = User.builder()
-                .userId(UUID.randomUUID().toString())
+                .userId(UUID.randomUUID().toString().substring(0,5))
                 .userName(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .email(request.getEmail())
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .phone(request.getPhoneNumber())
+                .address(request.getAddress())
                 .status(EStatus.ACTIVE)
                 .role(role)
                 .build();

@@ -5,7 +5,7 @@ import com.justlamvt05.bookshop.exception.DuplicateFieldException;
 import com.justlamvt05.bookshop.exception.UnauthorizedException;
 import com.justlamvt05.bookshop.payload.response.ApiCode;
 import com.justlamvt05.bookshop.payload.response.ApiResponse;
-import jakarta.persistence.EntityNotFoundException;
+import com.justlamvt05.bookshop.exception.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

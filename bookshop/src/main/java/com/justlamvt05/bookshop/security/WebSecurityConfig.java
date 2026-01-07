@@ -46,6 +46,7 @@ public class WebSecurityConfig {
                         authorizeRequests.requestMatchers("/auth/**","/hello", "/error", "/all").permitAll()
                                 .requestMatchers("/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/sale/**").hasRole("SALE")
+                                .requestMatchers("/user/**").hasRole("CUSTOMER")
                                 .anyRequest().authenticated())
 
                 .exceptionHandling(exceptions -> exceptions
