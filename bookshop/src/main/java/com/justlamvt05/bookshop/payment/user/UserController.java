@@ -11,13 +11,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/me")
+    @GetMapping("/profile")
     public ResponseEntity<ApiResponse<?>> me(
             @AuthenticationPrincipal UserDetailsImpl user) {
 
@@ -26,7 +26,7 @@ public class UserController {
         );
     }
 
-    @PutMapping("/me")
+    @PutMapping("/profile")
     public ResponseEntity<ApiResponse<?>> update(
             @AuthenticationPrincipal UserDetailsImpl user,
             @RequestBody @Valid UpdateProfileRequest request) {
@@ -36,7 +36,7 @@ public class UserController {
         );
     }
 
-    @GetMapping("/me/orders")
+    @GetMapping("/my-orders")
     public ResponseEntity<ApiResponse<?>> myOrders(
             @AuthenticationPrincipal UserDetailsImpl user) {
 

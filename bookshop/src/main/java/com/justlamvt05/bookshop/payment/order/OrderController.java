@@ -12,13 +12,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/orders")
+@RequestMapping("/orders")
 @RequiredArgsConstructor
 public class OrderController {
 
     private final OrderService orderService;
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<ApiResponse<?>> create(
             @AuthenticationPrincipal UserDetailsImpl user,
             @RequestBody @Valid CreateOrderRequest request) {
