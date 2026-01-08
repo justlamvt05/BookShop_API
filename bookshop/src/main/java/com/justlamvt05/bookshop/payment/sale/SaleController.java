@@ -18,10 +18,6 @@ public class SaleController {
 
     private final SaleService saleService;
 
-    @GetMapping("/test")
-    public ResponseEntity<String> test() {
-        return ResponseEntity.ok("Hello World");
-    }
 
     @GetMapping("/products")
     public ResponseEntity<?> getProducts(
@@ -73,9 +69,6 @@ public class SaleController {
         );
     }
 
-    /**
-     * Add multiple images
-     */
     @PostMapping("/{productId}/images/batch")
     public ResponseEntity<?> addMultipleImages(
             @PathVariable String productId,
@@ -86,9 +79,6 @@ public class SaleController {
         );
     }
 
-    /**
-     * Get images of product
-     */
     @GetMapping("/{productId}/images")
     public ResponseEntity<?> getImages(@PathVariable String productId) {
         return ResponseEntity.ok(
@@ -96,9 +86,6 @@ public class SaleController {
         );
     }
 
-    /**
-     * Delete image
-     */
     @DeleteMapping("/images/{imageId}")
     public ResponseEntity<?> deleteImage(@PathVariable String imageId) {
         return ResponseEntity.ok(

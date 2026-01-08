@@ -14,6 +14,7 @@ import com.justlamvt05.bookshop.payload.response.ApiResponse;
 import com.justlamvt05.bookshop.service.SaleService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.data.domain.Page;
@@ -31,6 +32,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class SaleServiceImpl implements SaleService {
 
     private final ProductRepository productRepository;
@@ -38,6 +40,7 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public ApiResponse<?> createProduct(ProductRequest request) {
+        log.info("ProductRequest: {}", request);
         String id = generateProductId();
         Product product = Product.builder()
                 .productId(id)
@@ -57,6 +60,7 @@ public class SaleServiceImpl implements SaleService {
     }
     @Override
     public ApiResponse<?> updateProduct(String productId, ProductRequest request) {
+        log.info("productId: {}", productId);
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new EntityNotFoundException("Product not found"));
 
@@ -70,6 +74,7 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public ApiResponse<?> deleteProduct(String productId) {
+        log.info("productId: {}", productId);
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new EntityNotFoundException("Product not found"));
 
@@ -95,14 +100,12 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public byte[] exportProductPdf() {
         try {
-            // 1. Load jrxml
             InputStream jrxml = getClass()
                     .getResourceAsStream("/reports/product_list.jrxml");
 
             JasperReport jasperReport =
                     JasperCompileManager.compileReport(jrxml);
 
-            // 2. Lấy data & map
             List<Product> products = productRepository.findAll();
 
             List<ProductReportDto> reportData = products.stream()
@@ -115,7 +118,6 @@ public class SaleServiceImpl implements SaleService {
                             .build())
                     .toList();
 
-            // 3. DataSource
             JRBeanCollectionDataSource dataSource =
                     new JRBeanCollectionDataSource(reportData);
 
@@ -123,11 +125,9 @@ public class SaleServiceImpl implements SaleService {
             Map<String, Object> params = new HashMap<>();
             params.put("createdBy", "BookShop System");
 
-            // 5. Fill report
             JasperPrint jasperPrint =
                     JasperFillManager.fillReport(jasperReport, params, dataSource);
 
-            // 6. Export PDF
             return JasperExportManager.exportReportToPdf(jasperPrint);
 
         } catch (Exception e) {
