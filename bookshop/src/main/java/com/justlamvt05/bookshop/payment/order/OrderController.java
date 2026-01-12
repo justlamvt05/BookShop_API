@@ -1,6 +1,5 @@
 package com.justlamvt05.bookshop.payment.order;
 
-import com.justlamvt05.bookshop.domain.dto.OrderDto;
 import com.justlamvt05.bookshop.payload.request.CreateOrderRequest;
 import com.justlamvt05.bookshop.payload.response.ApiResponse;
 import com.justlamvt05.bookshop.security.service.UserDetailsImpl;
