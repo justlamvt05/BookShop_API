@@ -24,7 +24,7 @@ public class AdminController {
     public ResponseEntity<ApiResponse<?>> getUsers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "userName") String sortBy,
+            @RequestParam(defaultValue = "userId") String sortBy,
             @RequestParam(defaultValue = "asc") String direction,
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String status
@@ -61,7 +61,7 @@ public class AdminController {
     }
 
     @GetMapping("/users/export")
-    public void exportCsv(HttpServletResponse response) throws IOException {
-        adminService.exportUsersToCsv(response);
+    public void exportExcel(HttpServletResponse response) throws IOException {
+        adminService.exportUsersToExcel(response);
     }
 }

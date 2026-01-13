@@ -16,6 +16,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +31,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -50,8 +56,11 @@ public class AdminServiceImpl implements AdminService {
                 : Sort.by(sortBy).ascending();
 
         Pageable pageable = PageRequest.of(page, size, sort);
-
-        Page<UserDto> users = userRepository.findAllUserDto(pageable, keyword, status);
+        EStatus eStatus = null;
+        if (!Objects.isNull(status)) {
+            eStatus = EStatus.valueOf(status.toUpperCase());
+        }
+        Page<UserDto> users = userRepository.findAllUserDto(pageable, keyword, eStatus);
 
         return ApiResponse.success(users);
     }
@@ -137,31 +146,56 @@ public class AdminServiceImpl implements AdminService {
 
 
     @Override
-    public void exportUsersToCsv(HttpServletResponse response) throws IOException {
+    public void exportUsersToExcel(HttpServletResponse response) throws IOException {
 
-        response.setContentType("text/csv");
+        response.setContentType(
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        );
         response.setHeader(
                 "Content-Disposition",
-                "attachment; filename=users.csv"
+                "attachment; filename=users.xlsx"
         );
 
         List<User> users = userRepository.findAll();
 
-        PrintWriter writer = response.getWriter();
-        writer.println("UserId,Username,Email,Phone,Role,Status");
+        // Create workbook
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Users");
 
-        for (User u : users) {
-            writer.printf(
-                    "%s,%s,%s,%s,%s,%s%n",
-                    u.getUserId(),
-                    u.getUserName(),
-                    u.getEmail(),
-                    u.getPhone(),
-                    u.getRole().getName(),
-                    u.getStatus()
-            );
+        // ===== Header =====
+        Row headerRow = sheet.createRow(0);
+        String[] headers = {
+                "UserId", "Username","FirstName","LastName","Date of Birth", "Email", "Role", "Status"
+        };
+
+        for (int i = 0; i < headers.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(headers[i]);
         }
 
-        writer.flush();
+        // ===== Data =====
+        int rowIdx = 1;
+        for (User u : users) {
+            Row row = sheet.createRow(rowIdx++);
+
+            row.createCell(0).setCellValue(u.getUserId());
+            row.createCell(1).setCellValue(u.getUserName());
+            row.createCell(2).setCellValue(u.getFirstName());
+            row.createCell(3).setCellValue(u.getLastName());
+            row.createCell(4).setCellValue(u.getDob());
+            row.createCell(5).setCellValue(u.getAddress());
+            row.createCell(6).setCellValue(u.getEmail());
+            row.createCell(7).setCellValue(u.getRole().getName().toString());
+            row.createCell(8).setCellValue(u.getStatus().name());
+        }
+
+        // Auto size columns
+        for (int i = 0; i < headers.length; i++) {
+            sheet.autoSizeColumn(i);
+        }
+
+        // Write to response
+        workbook.write(response.getOutputStream());
+        workbook.close();
     }
 }

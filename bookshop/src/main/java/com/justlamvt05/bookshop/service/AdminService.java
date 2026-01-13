@@ -19,5 +19,5 @@ public interface AdminService {
 
     ApiResponse<?> toggleUser(String userId);
 
-    void exportUsersToCsv(HttpServletResponse response) throws IOException;
+    void exportUsersToExcel(HttpServletResponse response) throws IOException;
 }

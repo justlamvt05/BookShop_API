@@ -2,6 +2,7 @@ package com.justlamvt05.bookshop.domain.repository;
 
 import com.justlamvt05.bookshop.domain.dto.UserDto;
 import com.justlamvt05.bookshop.domain.entity.User;
+import com.justlamvt05.bookshop.domain.entity.constraint.EStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -38,7 +39,7 @@ public interface UserRepository extends JpaRepository<User, String> {
     )
     AND (:status IS NULL OR u.status = :status)
 """)
-    Page<UserDto> findAllUserDto(Pageable pageable, String keyword, String status);
+    Page<UserDto> findAllUserDto(Pageable pageable, String keyword, EStatus status);
 
     Optional<User> findByUserName(String username);
 
