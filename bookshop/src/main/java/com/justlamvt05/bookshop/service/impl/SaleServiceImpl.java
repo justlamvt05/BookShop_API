@@ -6,7 +6,7 @@ import com.justlamvt05.bookshop.domain.entity.ProductImage;
 import com.justlamvt05.bookshop.domain.entity.constraint.EStatus;
 import com.justlamvt05.bookshop.domain.repository.ProductImageRepository;
 import com.justlamvt05.bookshop.domain.repository.ProductRepository;
-import com.justlamvt05.bookshop.exception.EntityNotFoundException;
+import com.justlamvt05.bookshop.exception.UserNotFoundException;
 import com.justlamvt05.bookshop.payload.request.AddMultipleProductImageRequest;
 import com.justlamvt05.bookshop.payload.request.ProductImageRequest;
 import com.justlamvt05.bookshop.payload.request.ProductRequest;
@@ -62,7 +62,7 @@ public class SaleServiceImpl implements SaleService {
     public ApiResponse<?> updateProduct(String productId, ProductRequest request) {
         log.info("productId: {}", productId);
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new EntityNotFoundException("Product not found"));
+                .orElseThrow(() -> new UserNotFoundException("Product not found"));
 
         product.setName(request.getName());
         product.setDescription(request.getDescription());
@@ -76,7 +76,7 @@ public class SaleServiceImpl implements SaleService {
     public ApiResponse<?> deleteProduct(String productId) {
         log.info("productId: {}", productId);
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new EntityNotFoundException("Product not found"));
+                .orElseThrow(() -> new UserNotFoundException("Product not found"));
 
         product.setStatus(EStatus.INACTIVE);
         return ApiResponse.success("Product soft deleted");
@@ -138,7 +138,7 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public ApiResponse<?> addProductImage(String productId, ProductImageRequest request) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new EntityNotFoundException("Product not found"));
+                .orElseThrow(() -> new UserNotFoundException("Product not found"));
 
         ProductImage image = ProductImage.builder()
                 .imageId(UUID.randomUUID().toString())
@@ -156,7 +156,7 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public ApiResponse<?> addMultipleProductImages(String productId, AddMultipleProductImageRequest request) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new EntityNotFoundException("Product not found"));
+                .orElseThrow(() -> new UserNotFoundException("Product not found"));
 
         List<ProductImage> images = request.getUrls().stream()
                 .map(url -> ProductImage.builder()
@@ -183,7 +183,7 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public ApiResponse<?> deleteProductImage(String imageId) {
         if (!productImageRepository.existsById(imageId)) {
-            throw new EntityNotFoundException("Image not found");
+            throw new UserNotFoundException("Image not found");
         }
 
         productImageRepository.deleteById(imageId);

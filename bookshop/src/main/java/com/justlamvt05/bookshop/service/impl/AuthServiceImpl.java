@@ -50,10 +50,10 @@ public class AuthServiceImpl implements AuthService {
                 .orElseThrow(() ->
                         new RuntimeException("Default role ROLE_CUSTOMER not found")
                 );
-
+        String id = generateUserId();
         /* ========= Create User ========= */
         User user = User.builder()
-                .userId(UUID.randomUUID().toString().substring(0,5))
+                .userId(id)
                 .userName(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .email(request.getEmail())
@@ -69,7 +69,10 @@ public class AuthServiceImpl implements AuthService {
 
         return ApiResponse.success("Register successfully");
     }
-
+    private String generateUserId() {
+        Long nextVal = userRepository.getNextUserSeq();
+        return String.format("U%05d", nextVal);
+    }
     private void validateRegisterRequest(RegisterRequest request) {
 
         if (!request.getPassword().equals(request.getConfirmPassword())) {

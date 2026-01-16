@@ -6,7 +6,7 @@ import com.justlamvt05.bookshop.domain.dto.UserProfileDto;
 import com.justlamvt05.bookshop.domain.entity.User;
 import com.justlamvt05.bookshop.domain.repository.OrderRepository;
 import com.justlamvt05.bookshop.domain.repository.UserRepository;
-import com.justlamvt05.bookshop.exception.EntityNotFoundException;
+import com.justlamvt05.bookshop.exception.UserNotFoundException;
 import com.justlamvt05.bookshop.mapper.OrderMapper;
 import com.justlamvt05.bookshop.mapper.UserMapper;
 import com.justlamvt05.bookshop.payload.response.ApiResponse;
@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
     public ApiResponse<UserProfileDto> getMyProfile(String userId) {
 
         User user = userRepo.findActiveById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         return ApiResponse.success(userMapper.toProfileDto(user));
     }
@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
     public ApiResponse<UserProfileDto> updateMyProfile(String userId, UpdateProfileRequest request) {
 
         User user = userRepo.findActiveById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         userMapper.updateProfile(user, request);
         userRepo.save(user);

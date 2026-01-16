@@ -2,10 +2,11 @@ package com.justlamvt05.bookshop.exception.handler;
 
 
 import com.justlamvt05.bookshop.exception.DuplicateFieldException;
+import com.justlamvt05.bookshop.exception.RoleNotFoundException;
+import com.justlamvt05.bookshop.exception.UserNotFoundException;
 import com.justlamvt05.bookshop.exception.UnauthorizedException;
 import com.justlamvt05.bookshop.payload.response.ApiCode;
 import com.justlamvt05.bookshop.payload.response.ApiResponse;
-import com.justlamvt05.bookshop.exception.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,14 +25,18 @@ public class GlobalExceptionHandler {
                 ApiResponse.error(ApiCode.BAD_REQUEST, e.getMessage()));
     }
 
-    @ExceptionHandler({EntityNotFoundException.class})
-    public ResponseEntity<ApiResponse<Object>> handleEntityNotFoundException(EntityNotFoundException e) {
-        String message = e.getMessage();
-        if (message == null) {
-            message = ApiCode.NOT_FOUND.getMessage();
-        }
-        log.error("EntityNotFoundException: {}", message);
-        return ResponseEntity.badRequest().body(ApiResponse.error(ApiCode.NOT_FOUND, message));
+    @ExceptionHandler({UserNotFoundException.class})
+    public ResponseEntity<ApiResponse<Object>> handleEntityNotFoundException(UserNotFoundException e) {
+
+        log.error("UserNotFoundException: {}", "User not found");
+        return ResponseEntity.badRequest().body(ApiResponse.error(ApiCode.NOT_FOUND, "User not found"));
+    }
+
+    @ExceptionHandler({RoleNotFoundException.class})
+    public ResponseEntity<ApiResponse<Object>> handleEntityNotFoundException(RoleNotFoundException e) {
+
+        log.error("RoleNotFoundException: {}", "Role not found");
+        return ResponseEntity.badRequest().body(ApiResponse.error(ApiCode.NOT_FOUND, "Role not found"));
     }
 
     @ExceptionHandler({DuplicateFieldException.class})

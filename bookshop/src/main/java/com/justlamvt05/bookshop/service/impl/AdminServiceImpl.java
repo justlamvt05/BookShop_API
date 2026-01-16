@@ -6,7 +6,9 @@ import com.justlamvt05.bookshop.domain.entity.User;
 import com.justlamvt05.bookshop.domain.entity.constraint.EStatus;
 import com.justlamvt05.bookshop.domain.repository.RoleRepository;
 import com.justlamvt05.bookshop.domain.repository.UserRepository;
-import com.justlamvt05.bookshop.exception.EntityNotFoundException;
+import com.justlamvt05.bookshop.exception.InvalidInputException;
+import com.justlamvt05.bookshop.exception.RoleNotFoundException;
+import com.justlamvt05.bookshop.exception.UserNotFoundException;
 import com.justlamvt05.bookshop.mapper.UserMapper;
 import com.justlamvt05.bookshop.payload.request.AdminUserRequestInsert;
 import com.justlamvt05.bookshop.payload.request.AdminUserRequestUpdate;
@@ -29,7 +31,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 import java.util.Objects;
 
@@ -73,7 +74,7 @@ public class AdminServiceImpl implements AdminService {
         }
 
         Role role = roleRepository.findByName(request.getRole())
-                .orElseThrow(() -> new EntityNotFoundException("Role not found"));
+                .orElseThrow(() -> new RoleNotFoundException("Role not found"));
         String id = generateUserId();
         User user = User.builder()
                 .userId(id)
@@ -99,12 +100,17 @@ public class AdminServiceImpl implements AdminService {
     public ApiResponse<?> updateUser(String userId, AdminUserRequestUpdate request) {
         log.info("userId: {}", userId);
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         Role role = roleRepository.findByName(request.getRole())
-                .orElseThrow(() -> new EntityNotFoundException("Role not found"));
+                .orElseThrow(() -> new RoleNotFoundException("Role not found"));
 
-        user.setEmail(request.getEmail());
+        if (!user.getEmail().equals(request.getEmail())) {
+            if (userRepository.existsByEmail(request.getEmail())) {
+                throw new InvalidInputException("Email already exists");
+            }
+            user.setEmail(request.getEmail());
+        }
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setRole(role);
@@ -118,7 +124,7 @@ public class AdminServiceImpl implements AdminService {
     public ApiResponse<?> findUser(String userId) {
         log.info("userId: {}", userId);
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
         UserDto userDto = userMapper.toDto(user);
         return ApiResponse.success(userDto);
     }
@@ -128,7 +134,7 @@ public class AdminServiceImpl implements AdminService {
         log.info("Toggle user status, userId: {}", userId);
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         // toggle status
         if (user.getStatus() == EStatus.ACTIVE) {
@@ -165,7 +171,7 @@ public class AdminServiceImpl implements AdminService {
         // ===== Header =====
         Row headerRow = sheet.createRow(0);
         String[] headers = {
-                "UserId", "Username","FirstName","LastName","Date of Birth", "Email", "Role", "Status"
+                "UserId", "Username","FirstName","LastName","Date of Birth","Address", "Email", "Role", "Status"
         };
 
         for (int i = 0; i < headers.length; i++) {
@@ -177,7 +183,7 @@ public class AdminServiceImpl implements AdminService {
         int rowIdx = 1;
         for (User u : users) {
             Row row = sheet.createRow(rowIdx++);
-
+            log.info("DOB: {}", u.getDob());
             row.createCell(0).setCellValue(u.getUserId());
             row.createCell(1).setCellValue(u.getUserName());
             row.createCell(2).setCellValue(u.getFirstName());

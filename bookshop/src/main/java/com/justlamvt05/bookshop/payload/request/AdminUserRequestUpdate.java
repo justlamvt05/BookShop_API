@@ -12,7 +12,6 @@ import lombok.*;
 @Builder
 public class AdminUserRequestUpdate {
 
-    @NotBlank
     private String password;
 
     @NotBlank

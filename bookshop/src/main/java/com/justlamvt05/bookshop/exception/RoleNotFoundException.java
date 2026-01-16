@@ -3,10 +3,10 @@ package com.justlamvt05.bookshop.exception;
 import lombok.Getter;
 
 @Getter
-public class EntityNotFoundException extends RuntimeException {
+public class RoleNotFoundException extends RuntimeException {
     private final String customMessage;
 
-    public EntityNotFoundException(String msg) {
+    public RoleNotFoundException(String msg) {
         this.customMessage = msg;
     }
 }
