@@ -20,7 +20,7 @@ function AdminUserList() {
   const loadUsers = () => {
     const params = {
       page,
-      size: 10
+      size: 5
     };
     if (keyword) {
       params.keyword = keyword;
