@@ -34,81 +34,117 @@ function AdminUserAdd() {
 
   return (
     <div className="container mt-4">
-      <h3>➕ Add User</h3>
+      <div style={{ marginBottom: "2rem" }}>
+        <h2 style={{ marginBottom: "0.5rem" }}>Add New User</h2>
+        <p style={{ color: "#7f8c8d" }}>Create a new user account</p>
+      </div>
 
       <form className="card shadow" onSubmit={handleSubmit}>
         <div className="card-body">
 
-          <input className="form-control mb-2"
-            name="userName"
-            placeholder="Username"
-            value={form.userName}
-            onChange={handleChange}
-            required
-          />
+          <div className="form-group">
+            <label>Username</label>
+            <input 
+              className="form-control"
+              name="userName"
+              placeholder="Enter username"
+              value={form.userName}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-          <input className="form-control mb-2"
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={form.password}
-            onChange={handleChange}
-            required
-          />
+          <div className="form-group">
+            <label>Email</label>
+            <input 
+              className="form-control"
+              name="email"
+              placeholder="Enter email address"
+              value={form.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-          <input className="form-control mb-2"
-            name="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={handleChange}
-            required
-          />
+          <div className="row">
+            <div className="col-md-6">
+              <div className="form-group">
+                <label>First Name</label>
+                <input 
+                  className="form-control"
+                  name="firstName"
+                  placeholder="First name"
+                  value={form.firstName}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
 
-          <input className="form-control mb-2"
-            name="phone"
-            placeholder="Phone"
-            value={form.phone}
-            onChange={handleChange}
-            required
-          />
+            <div className="col-md-6">
+              <div className="form-group">
+                <label>Last Name</label>
+                <input 
+                  className="form-control"
+                  name="lastName"
+                  placeholder="Last name"
+                  value={form.lastName}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+          </div>
 
-          <input className="form-control mb-2"
-            name="firstName"
-            placeholder="First name"
-            value={form.firstName}
-            onChange={handleChange}
-          />
+          <div className="form-group">
+            <label>Phone Number</label>
+            <input 
+              className="form-control"
+              name="phone"
+              placeholder="Enter phone number"
+              value={form.phone}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-          <input className="form-control mb-2"
-            name="lastName"
-            placeholder="Last name"
-            value={form.lastName}
-            onChange={handleChange}
-          />
+          <div className="form-group">
+            <label>Password</label>
+            <input 
+              className="form-control"
+              type="password"
+              name="password"
+              placeholder="Enter password"
+              value={form.password}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-          <select
-            className="form-select"
-            name="role"
-            value={form.role}
-            onChange={handleChange}
-          >
-            <option value="ROLE_ADMIN">Admin</option>
-            <option value="ROLE_SALE">Sale</option>
-            <option value="ROLE_CUSTOMER">CUSTOMER</option>
-          </select>
+          <div className="form-group">
+            <label>Role</label>
+            <select
+              className="form-select"
+              name="role"
+              value={form.role}
+              onChange={handleChange}
+            >
+              <option value="ROLE_ADMIN">Admin</option>
+              <option value="ROLE_SALE">Sale</option>
+              <option value="ROLE_CUSTOMER">Customer</option>
+            </select>
+          </div>
 
         </div>
 
-        <div className="card-footer text-end">
+        <div className="card-footer text-end" style={{ display: "flex", gap: "1rem", justifyContent: "flex-end" }}>
           <button
             type="button"
-            className="btn btn-secondary me-2"
+            className="btn btn-secondary"
             onClick={() => navigate("/admin/users")}
           >
             Cancel
           </button>
-          <button className="btn btn-primary">
-            Save
+          <button className="btn btn-success" type="submit">
+            Create User
           </button>
         </div>
       </form>

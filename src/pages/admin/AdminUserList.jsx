@@ -69,126 +69,144 @@ function AdminUserList() {
   return (
     <div className="container mt-4">
       <div className="d-flex justify-content-between mb-3">
-        <h2>👑 Admin - User Management</h2>
+        <div>
+          <h2 style={{ marginBottom: "0.5rem" }}>User Management</h2>
+          <p style={{ color: "#7f8c8d" }}>Manage all system users and permissions</p>
+        </div>
       </div>
 
       {/* Search & Filter */}
-      <div className="row mb-3">
-        <div className="col-md-4">
-          <input
-            className="form-control"
-            placeholder="🔍 Search username / email"
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-          />
-        </div>
+      <div className="card shadow" style={{ padding: "2rem", marginBottom: "2rem" }}>
+        <div className="row">
+          <div className="col-md-4">
+            <div className="form-group">
+              <label>Search by username or email</label>
+              <input
+                className="form-control"
+                placeholder="Type here..."
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+              />
+            </div>
+          </div>
 
-        <div className="col-md-3">
-          <select
-            className="form-select"
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-          >
-            <option value="">-- All Status --</option>
-            <option value="ACTIVE">ACTIVE</option>
-            <option value="INACTIVE">INACTIVE</option>
-          </select>
-        </div>
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>Filter by status</label>
+              <select
+                className="form-select"
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+              >
+                <option value="">All Status</option>
+                <option value="ACTIVE">Active</option>
+                <option value="INACTIVE">Inactive</option>
+              </select>
+            </div>
+          </div>
 
-        <div className="col-md-2">
-          <button className="btn btn-primary w-100" onClick={handleSearch}>
-            Search
-          </button>
-        </div>
-        <div className="col-md-3 d-flex">
-          <button className="btn btn-success me-3" onClick={handleExport}>
-            📤 Export Excel
-          </button>
+          <div className="col-md-2" style={{ display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
+            <button className="btn btn-primary" onClick={handleSearch}>
+              Search
+            </button>
+          </div>
+          
+          <div className="col-md-3" style={{ display: "flex", gap: "1rem", justifyContent: "flex-end", flexDirection: "column" }}>
+            <div style={{ display: "flex", gap: "1rem" }}>
+              <button className="btn btn-success" onClick={handleExport} style={{ flex: 1 }}>
+                Export Excel
+              </button>
 
-          <button
-            className="btn btn-secondary"
-            onClick={() => navigate(`/admin/users/new`)}
-          >
-            ➕ Add User
-          </button>
+              <button
+                className="btn btn-primary"
+                onClick={() => navigate(`/admin/users/new`)}
+                style={{ flex: 1 }}
+              >
+                Add User
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Table */}
-      <table className="table table-bordered table-hover shadow">
-        <thead className="table-dark">
-          <tr>
-            <th>Username</th>
-            <th>FirstName</th>
-            <th>LastName</th>
-            <th>DOB</th>
-            <th>Address</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Status</th>
-            <th width="120">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map(u => (
-            <tr key={u.userId}>
-              <td>{u.userName}</td>
-              <td>{u.firstName}</td>
-              <td>{u.lastName}</td>
-              <td>{u.dob}</td>
-              <td>{u.address}</td>
-              <td>{u.email}</td>
-              <td>
-                <span className="badge bg-primary">{u.role.name}</span>
-              </td>
-              <td>
-                <span
-                  className={`badge ${u.status === "ACTIVE" ? "bg-success" : "bg-danger"
-                    }`}
-                >
-                  {u.status}
-                </span>
-              </td>
-              <td>
-                <div className="d-flex align-items-center">
-                  <button
-                    className="btn btn-sm btn-warning me-2"
-                    onClick={() => handleToggle(u.userId)}
-                  >
-                    Toggle
-                  </button>
-
-                  <button
-                    className="btn btn-sm btn-info"
-                    onClick={() => handleDetails(u.userId)}
-                  >
-                    Details
-                  </button>
-                </div>
-              </td>
+      <div style={{ overflowX: "auto" }}>
+        <table className="table table-bordered table-hover shadow">
+          <thead className="table-dark">
+            <tr>
+              <th>Username</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th width="150">Action</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {users.map(u => (
+              <tr key={u.userId}>
+                <td>
+                  <strong>{u.userName}</strong>
+                </td>
+                <td>{u.firstName}</td>
+                <td>{u.lastName}</td>
+                <td>{u.email}</td>
+                <td>
+                  <span className="badge bg-primary">{u.role.name}</span>
+                </td>
+                <td>
+                  <span
+                    className={`badge ${u.status === "ACTIVE" ? "bg-success" : "bg-danger"}`}
+                  >
+                    {u.status}
+                  </span>
+                </td>
+                <td>
+                  <div className="d-flex align-items-center" style={{ gap: "0.5rem" }}>
+                    <button
+                      className="btn btn-sm btn-warning"
+                      onClick={() => handleToggle(u.userId)}
+                      title="Toggle Status"
+                    >
+                      Toggle
+                    </button>
 
-      {/* Pagination numbers */}
-      <nav>
-        <ul className="pagination justify-content-center">
-          {Array.from({ length: totalPages }).map((_, i) => (
-            <li
-              key={i}
-              className={`page-item ${i === page ? "active" : ""}`}
-            >
-              <button
-                className="page-link"
-                onClick={() => setPage(i)}
+                    <button
+                      className="btn btn-sm btn-info"
+                      onClick={() => handleDetails(u.userId)}
+                      title="View Details"
+                    >
+                      Details
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Pagination */}
+      {totalPages > 0 && (
+        <nav>
+          <ul className="pagination">
+            {Array.from({ length: totalPages }).map((_, i) => (
+              <li
+                key={i}
+                className={`page-item ${i === page ? "active" : ""}`}
               >
-                {i + 1}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </nav>
+                <button
+                  className="page-link"
+                  onClick={() => setPage(i)}
+                >
+                  {i + 1}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
     </div>
   );
 }
