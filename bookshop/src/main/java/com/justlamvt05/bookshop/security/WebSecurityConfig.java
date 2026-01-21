@@ -29,7 +29,7 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class WebSecurityConfig {
+public class WebSecurityConfig  {
 
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthEntryPointJwt unauthorizedHandler;
@@ -56,6 +56,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/sale/**").hasRole("SALE")
                                 .requestMatchers("/user/**").hasRole("CUSTOMER")
+                                .requestMatchers("/uploads/**").permitAll()
                                 .anyRequest().authenticated())
 
                 .exceptionHandling(exceptions -> exceptions

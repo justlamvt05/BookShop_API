@@ -10,6 +10,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/sale")
@@ -46,7 +49,7 @@ public class SaleController {
         return ResponseEntity.ok(saleService.updateProduct(id, request));
     }
 
-    @DeleteMapping("/products/{id}")
+    @PatchMapping("/products/{id}")
     public ResponseEntity<?> delete(@PathVariable String id) {
         return ResponseEntity.ok(saleService.deleteProduct(id));
     }
@@ -59,10 +62,10 @@ public class SaleController {
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(pdf);
     }
-    @PostMapping("/{productId}/images")
+    @PostMapping(value = "/{productId}/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> addImage(
             @PathVariable String productId,
-            @RequestBody @Valid ProductImageRequest request
+            @ModelAttribute ProductImageRequest request
     ) {
         return ResponseEntity.ok(
                 saleService.addProductImage(productId, request)
@@ -70,12 +73,12 @@ public class SaleController {
     }
 
     @PostMapping("/{productId}/images/batch")
-    public ResponseEntity<?> addMultipleImages(
+    public ResponseEntity<?> uploadProductImages(
             @PathVariable String productId,
-            @RequestBody @Valid AddMultipleProductImageRequest request
+            @RequestParam("files") List<MultipartFile> files
     ) {
         return ResponseEntity.ok(
-                saleService.addMultipleProductImages(productId, request)
+                saleService.addMultipleProductImages(productId, files)
         );
     }
 

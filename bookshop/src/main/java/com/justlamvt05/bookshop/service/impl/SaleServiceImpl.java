@@ -7,11 +7,11 @@ import com.justlamvt05.bookshop.domain.entity.constraint.EStatus;
 import com.justlamvt05.bookshop.domain.repository.ProductImageRepository;
 import com.justlamvt05.bookshop.domain.repository.ProductRepository;
 import com.justlamvt05.bookshop.exception.UserNotFoundException;
-import com.justlamvt05.bookshop.payload.request.AddMultipleProductImageRequest;
 import com.justlamvt05.bookshop.payload.request.ProductImageRequest;
 import com.justlamvt05.bookshop.payload.request.ProductRequest;
 import com.justlamvt05.bookshop.payload.response.ApiResponse;
 import com.justlamvt05.bookshop.service.SaleService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,12 +22,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -77,9 +81,13 @@ public class SaleServiceImpl implements SaleService {
         log.info("productId: {}", productId);
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new UserNotFoundException("Product not found"));
-
-        product.setStatus(EStatus.INACTIVE);
-        return ApiResponse.success("Product soft deleted");
+        if(product.getStatus() == EStatus.ACTIVE) {
+            product.setStatus(EStatus.INACTIVE);
+        }else {
+            product.setStatus(EStatus.ACTIVE);
+        }
+        productRepository.save(product);
+        return ApiResponse.success("Product toggle successfully");
     }
 
     @Override
@@ -137,14 +145,34 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public ApiResponse<?> addProductImage(String productId, ProductImageRequest request) {
+
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new UserNotFoundException("Product not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Product not found"));
+
+        MultipartFile file = request.getFile();
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("Image file is required");
+        }
+
+
+        String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+
+        Path uploadPath = Paths.get("C:/uploads/products");
+        try {
+            Files.createDirectories(uploadPath);
+            Files.copy(file.getInputStream(), uploadPath.resolve(fileName));
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to store image", e);
+        }
+
+        //FE call
+        String imageUrl = "/uploads/products/" + fileName;
 
         ProductImage image = ProductImage.builder()
                 .imageId(UUID.randomUUID().toString())
-                .url(request.getUrl())
+                .url(imageUrl)
                 .product(product)
-                .isMain(false)
+                .isMain(Boolean.TRUE.equals(request.getIsMain()))
                 .status(EStatus.ACTIVE)
                 .build();
 
@@ -153,25 +181,56 @@ public class SaleServiceImpl implements SaleService {
         return ApiResponse.success("Image added to product");
     }
 
+
     @Override
-    public ApiResponse<?> addMultipleProductImages(String productId, AddMultipleProductImageRequest request) {
+    public ApiResponse<?> addMultipleProductImages(
+            String productId,
+            List<MultipartFile> files
+    ) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new UserNotFoundException("Product not found"));
 
-        List<ProductImage> images = request.getUrls().stream()
-                .map(url -> ProductImage.builder()
-                        .imageId(UUID.randomUUID().toString())
-                        .url(url)
-                        .product(product)
-                        .isMain(false)
-                        .status(EStatus.ACTIVE)
-                        .build())
-                .toList();
+        String uploadDir = "C:/uploads/products/" + productId + "/";
+        File dir = new File(uploadDir);
+        if (!dir.exists()) dir.mkdirs();
+
+        List<ProductImage> images = new ArrayList<>();
+
+        for (MultipartFile file : files) {
+            if (file.isEmpty()) continue;
+
+            // validate type
+            String contentType = file.getContentType();
+            if (!List.of("image/png", "image/jpeg", "image/jpg").contains(contentType)) {
+                throw new RuntimeException("Invalid image type");
+            }
+
+            String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+            Path filePath = Paths.get(uploadDir, fileName);
+
+            try {
+                Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to store image", e);
+            }
+
+            String imageUrl = "/uploads/products/" + productId + "/" + fileName;
+
+
+            images.add(ProductImage.builder()
+                    .imageId(UUID.randomUUID().toString())
+                    .url(imageUrl)
+                    .product(product)
+                    .isMain(false)
+                    .status(EStatus.ACTIVE)
+                    .build());
+        }
 
         productImageRepository.saveAll(images);
 
-        return ApiResponse.success("Images added");
+        return ApiResponse.success("Images uploaded successfully");
     }
+
 
     @Override
     public ApiResponse<?> getProductImages(String productId) {

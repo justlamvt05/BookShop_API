@@ -2,6 +2,7 @@ package com.justlamvt05.bookshop.payload.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -10,6 +11,6 @@ import lombok.*;
 @Builder
 public class ProductImageRequest {
 
-    @NotBlank(message = "Image URL cannot be empty")
-    private String url;
+    private MultipartFile file;
+    private Boolean isMain;
 }
