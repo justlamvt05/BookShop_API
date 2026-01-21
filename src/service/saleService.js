@@ -1,7 +1,7 @@
 // services/saleService.js
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/api/sales";
+const API_URL = "http://localhost:8080/api/sale";
 
 axios.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
@@ -43,13 +43,11 @@ export const uploadSingleImage = (productId, file, isMain) => {
   formData.append("isMain", isMain);
 
   return axios.post(
-    `${API_URL}/products/${productId}/images`,
-    formData,
-    {
-      headers: { "Content-Type": "multipart/form-data" }
-    }
+    `${API_URL}/${productId}/images`,
+    formData
   );
 };
+
 
 export const uploadMultipleImages = (productId, files) => {
   const formData = new FormData();
@@ -58,7 +56,7 @@ export const uploadMultipleImages = (productId, files) => {
   });
 
   return axios.post(
-    `${API_URL}/products/${productId}/images/batch`,
+    `${API_URL}/${productId}/images/batch`,
     formData,
     {
       headers: { "Content-Type": "multipart/form-data" }
@@ -67,9 +65,15 @@ export const uploadMultipleImages = (productId, files) => {
 };
 
 export const getProductImages = (productId) => {
-  return axios.get(`${API_URL}/products/${productId}/images`);
+  return axios.get(`${API_URL}/${productId}/images`);
 };
 
 export const deleteProductImage = (imageId) => {
-  return axios.delete(`${API_URL}/sales/images/${imageId}`);
+  return axios.delete(`${API_URL}/images/${imageId}`);
+};
+// Export PDF
+export const exportProductPdf = () => {
+  return axios.get(`${API_URL}/products/export-pdf`, {
+    responseType: 'blob'
+  });
 };

@@ -5,6 +5,7 @@ import AdminUserForm from "./pages/admin/AdminUserForm";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminUserAdd from "./pages/admin/AdminUserAdd";
 import RegisterForm from "./pages/RegisterForm";
+import ProductManagement from "./pages/sale/ProductManagement";
 
 function App() {
   return (
@@ -23,6 +24,16 @@ function App() {
           <Route path="users" element={<AdminUserList />} />
           <Route path="users/:id" element={<AdminUserForm />} />
           <Route path="users/new" element={<AdminUserAdd />} />
+        </Route>
+
+        {/* Protected Sale Routes */}
+        <Route
+          path="/sale"
+          element={
+            <ProtectedRoute role="ROLE_SALE" />
+          }
+        >
+          <Route path="products" element={<ProductManagement />} />
         </Route>
 
       </Routes>

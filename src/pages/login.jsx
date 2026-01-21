@@ -20,7 +20,7 @@ function Login() {
       localStorage.setItem("role", roles);
 
       if (roles === "ROLE_ADMIN") navigate("/admin/users");
-      else if (roles === "ROLE_SALE") navigate("/sale");
+      else if (roles === "ROLE_SALE") navigate("/sale/products");
       else navigate("/user");
 
     } catch(err) {
