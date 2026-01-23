@@ -47,10 +47,10 @@ public class CartController {
         );
     }
 
-    @DeleteMapping("/remove/{productId}")
+    @DeleteMapping("/remove")
     public ResponseEntity<ApiResponse<?>> removeCartItem(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @PathVariable String productId
+            @RequestParam String productId
     ) {
         return ResponseEntity.ok(
                 cartService.removeCartItem(userDetails.getUserId(), productId)
