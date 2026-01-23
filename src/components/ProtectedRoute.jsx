@@ -1,19 +1,19 @@
 import { Navigate, Outlet } from "react-router-dom";
 
-const ProtectedRoute = ({ allowedRoles }) => {
+const ProtectedRoute = ({ role, allowedRoles }) => {
   const token = localStorage.getItem("token");
-  const roles = JSON.parse(localStorage.getItem("roles") || "[]");
+  const userRole = localStorage.getItem("role");
 
   // Chưa đăng nhập
   if (!token) {
     return <Navigate to="/login" replace />;
   }
 
-  // Có check role
-  if (allowedRoles && allowedRoles.length > 0) {
-    const hasPermission = roles.some((r) =>
-      allowedRoles.includes(r)
-    );
+  // Check role
+  const rolesToCheck = allowedRoles || (role ? [role] : []);
+
+  if (rolesToCheck.length > 0) {
+    const hasPermission = rolesToCheck.includes(userRole);
 
     if (!hasPermission) {
       return <Navigate to="/403" replace />;
