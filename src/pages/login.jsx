@@ -21,10 +21,10 @@ function Login() {
 
       if (roles === "ROLE_ADMIN") navigate("/admin/users");
       else if (roles === "ROLE_SALE") navigate("/sale/products");
-      else navigate("/user");
+      else navigate("/");
 
-    } catch(err) {
-      console.log(err.response.data.message); 
+    } catch (err) {
+      console.log(err.response.data.message);
       setError(err.response.data.message);
     }
   };

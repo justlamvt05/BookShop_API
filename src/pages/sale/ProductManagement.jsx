@@ -9,7 +9,8 @@ import {
   uploadMultipleImages,
   getProductImages,
   deleteProductImage,
-  exportProductPdf
+  exportProductPdf,
+  toggleProductStatus
 } from "../../service/saleService";
 
 function ProductManagement() {
@@ -121,6 +122,20 @@ function ProductManagement() {
     });
     setEditingId(product.productId);
     setShowForm(true);
+  };
+
+  // Toggle product status
+  const handleToggleStatus = async (productId) => {
+    setLoading(true);
+    try {
+      await toggleProductStatus(productId);
+      showSuccess("Product status updated successfully");
+      loadProducts();
+    } catch (err) {
+      showError(err.response?.data?.message || "Failed to toggle product status");
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Create or update product
@@ -267,24 +282,24 @@ function ProductManagement() {
     setLoading(true);
     try {
       const response = await exportProductPdf();
-      
+
       // Create a blob from the response
       const blob = new Blob([response.data], { type: 'application/pdf' });
-      
+
       // Create a URL for the blob
       const url = window.URL.createObjectURL(blob);
-      
+
       // Create a link element and trigger download
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', `products_${new Date().toISOString().slice(0, 10)}.pdf`);
       document.body.appendChild(link);
       link.click();
-      
+
       // Clean up
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
-      
+
       showSuccess("PDF exported successfully");
     } catch (err) {
       showError(err.response?.data?.message || "Failed to export PDF");
@@ -503,7 +518,8 @@ function ProductManagement() {
               <th>Description</th>
               <th>Price</th>
               <th>Quantity</th>
-              <th width="200">Actions</th>
+              <th>Status</th>
+              <th width="250">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -517,7 +533,12 @@ function ProductManagement() {
                   <td>${product.price.toFixed(2)}</td>
                   <td>{product.quantity}</td>
                   <td>
-                    <div className="d-flex align-items-center" style={{ gap: "0.5rem" }}>
+                    <span className={`badge ${product.status === "ACTIVE" ? "bg-success" : "bg-danger"}`}>
+                      {product.status}
+                    </span>
+                  </td>
+                  <td>
+                    <div className="d-flex align-items-center" style={{ gap: "0.5rem", flexWrap: "wrap" }}>
                       <button
                         className="btn btn-sm btn-info"
                         onClick={() => handleEditProduct(product)}
@@ -528,7 +549,16 @@ function ProductManagement() {
                       </button>
 
                       <button
-                        className="btn btn-sm btn-warning"
+                        className={`btn btn-sm ${product.status === "ACTIVE" ? "btn-warning" : "btn-success"}`}
+                        onClick={() => handleToggleStatus(product.productId)}
+                        disabled={loading}
+                        title={product.status === "ACTIVE" ? "Deactivate" : "Activate"}
+                      >
+                        {product.status === "ACTIVE" ? "Deactivate" : "Activate"}
+                      </button>
+
+                      <button
+                        className="btn btn-sm btn-primary"
                         onClick={() => handleOpenImageModal(product.productId)}
                         disabled={loading}
                         title="Manage Images"
@@ -541,7 +571,7 @@ function ProductManagement() {
               ))
             ) : (
               <tr>
-                <td colSpan="5" className="text-center" style={{ padding: "2rem" }}>
+                <td colSpan="6" className="text-center" style={{ padding: "2rem" }}>
                   No products found
                 </td>
               </tr>

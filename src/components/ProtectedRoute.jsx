@@ -1,11 +1,24 @@
-// components/ProtectedRoute.jsx
 import { Navigate, Outlet } from "react-router-dom";
 
-const ProtectedRoute = ({ role }) => {
+const ProtectedRoute = ({ allowedRoles }) => {
   const token = localStorage.getItem("token");
-  const userRole = localStorage.getItem("role");
-  if (!token) return <Navigate to="/login" replace />;
-  if (role && userRole !== role) return <Navigate to="/403" replace />;
+  const roles = JSON.parse(localStorage.getItem("roles") || "[]");
+
+  // Chưa đăng nhập
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // Có check role
+  if (allowedRoles && allowedRoles.length > 0) {
+    const hasPermission = roles.some((r) =>
+      allowedRoles.includes(r)
+    );
+
+    if (!hasPermission) {
+      return <Navigate to="/403" replace />;
+    }
+  }
 
   return <Outlet />;
 };

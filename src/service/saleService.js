@@ -36,6 +36,11 @@ export const deleteProduct = (productId) => {
   return axios.delete(`${API_URL}/products/${productId}`);
 };
 
+// Toggle product status
+export const toggleProductStatus = (productId) => {
+  return axios.patch(`${API_URL}/products/${productId}`);
+};
+
 // Image Management
 export const uploadSingleImage = (productId, file, isMain) => {
   const formData = new FormData();
