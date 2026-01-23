@@ -1,5 +1,6 @@
 package com.justlamvt05.bookshop.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.justlamvt05.bookshop.domain.entity.constraint.EStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -48,6 +49,7 @@ public class User {
         @Column(length = 20)
         private EStatus status;
 
+        @JsonIgnore
         @ManyToOne
         @JoinColumn(name = "role_id", nullable = false)
         private Role role;

@@ -12,9 +12,9 @@ public class UpdateProfileRequest {
 
     @NotBlank
     private String phone;
-
     private String firstName;
     private String lastName;
     private LocalDate dob;
     private String address;
+    private String password;
 }

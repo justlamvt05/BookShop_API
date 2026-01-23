@@ -13,6 +13,7 @@ import com.justlamvt05.bookshop.payload.response.ApiResponse;
 import com.justlamvt05.bookshop.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class UserServiceImpl implements UserService {
     private final OrderRepository orderRepo;
     private final UserMapper userMapper;
     private final OrderMapper orderMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public ApiResponse<UserProfileDto> getMyProfile(String userId) {
@@ -43,6 +45,9 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         userMapper.updateProfile(user, request);
+        if (request.getPassword() != null && !request.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
         userRepo.save(user);
 
         return ApiResponse.success(userMapper.toProfileDto(user));

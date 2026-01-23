@@ -53,9 +53,12 @@ public class WebSecurityConfig  {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests.requestMatchers("/auth/**","/hello", "/error", "/all").permitAll()
+                                .requestMatchers("/user/profile").hasAnyRole("ADMIN", "SALE", "CUSTOMER")
                                 .requestMatchers("/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/sale/**").hasRole("SALE")
                                 .requestMatchers("/user/**").hasRole("CUSTOMER")
+                                .requestMatchers("/cart/**").permitAll()
+                                .requestMatchers("/products/**").permitAll()
                                 .requestMatchers("/uploads/**").permitAll()
                                 .anyRequest().authenticated())
 
