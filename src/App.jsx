@@ -9,6 +9,7 @@ import ProductManagement from "./pages/sale/ProductManagement";
 import Profile from "./pages/user/Profile";
 import MyOrders from "./pages/user/MyOrders";
 import Cart from "./pages/user/Cart";
+import Checkout from "./pages/user/Checkout";
 import ProductList from "./pages/shop/ProductList";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -25,17 +26,28 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<RegisterForm />} />
             <Route path="/shop" element={<ProductList />} />
+            <Route path="/checkout" element={<Checkout />} />
 
-            {/* Protected User Routes */}
+            {/* Profile Route - Accessible by all authenticated users */}
+            <Route
+              path="/user/profile"
+              element={
+                <ProtectedRoute allowedRoles={["ROLE_CUSTOMER", "ROLE_ADMIN", "ROLE_SALE"]} />
+              }
+            >
+              <Route path="" element={<Profile />} />
+            </Route>
+
+            {/* Protected User Routes - Only for ROLE_CUSTOMER */}
             <Route
               path="/user"
               element={
                 <ProtectedRoute role="ROLE_CUSTOMER" />
               }
             >
-              <Route path="profile" element={<Profile />} />
               <Route path="orders" element={<MyOrders />} />
               <Route path="cart" element={<Cart />} />
+              <Route path="checkout" element={<Checkout />} />
             </Route>
 
             {/* Protected Admin Routes */}
