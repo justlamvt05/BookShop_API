@@ -55,11 +55,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ApiResponse<List<OrderDto>> getMyOrders(String userId) {
-
-        List<OrderDto> orders = orderRepo.findByUser_UserId(userId)
-                .stream()
-                .map(orderMapper::toDto)
-                .toList();
+        List<OrderDto> orders = orderMapper.toDtoList(
+                orderRepo.findByUser_UserId(userId)
+        );
 
         return ApiResponse.success(orders);
     }

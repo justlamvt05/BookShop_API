@@ -7,5 +7,5 @@ public interface OrderService {
 
     ApiResponse<?> createOrder(String userId, CreateOrderRequest request);
 
-    ApiResponse<?> confirmPayment(String orderId);
+    ApiResponse<?> confirmPayment(Long orderId);
 }

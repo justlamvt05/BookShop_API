@@ -36,49 +36,42 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public ApiResponse<?> createOrder(String userId, CreateOrderRequest request) {
-
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
-
         Order order = new Order();
         order.setUser(user);
         order.setPaymentStatus(EPaymentStatus.PENDING);
         order.setCreatedAt(LocalDateTime.now());
-
         BigDecimal total = BigDecimal.ZERO;
-
         for (OrderItemRequest itemReq : request.getItems()) {
-
             Product product = productRepo.findActiveById(itemReq.getProductId())
                     .orElseThrow(() -> new UserNotFoundException("Product not found"));
-
             if (itemReq.getQuantity() > product.getQuantity()) {
                 throw new IllegalArgumentException("Quantity exceeds stock");
             }
-
             OrderItem item = new OrderItem();
             item.setOrder(order);
             item.setProduct(product);
             item.setQuantity(itemReq.getQuantity());
             item.setPrice(product.getPrice());
 
+            order.getOrderItems().add(item);
             total = total.add(
                     product.getPrice().multiply(BigDecimal.valueOf(itemReq.getQuantity()))
             );
-
-            orderItemRepo.save(item);
         }
-
         order.setTotalAmount(total);
-        order.setQrCodeUrl("QR_" + order.getOrderId());
 
-        orderRepo.save(order);
+        Order savedOrder = orderRepo.save(order);
 
-        return ApiResponse.create(orderMapper.toDto(order));
+        savedOrder.setQrCodeUrl("QR_" + savedOrder.getOrderId());
+        savedOrder = orderRepo.save(savedOrder);
+
+        return ApiResponse.create(orderMapper.toDto(savedOrder));
     }
 
     @Override
-    public ApiResponse<?> confirmPayment(String orderId) {
+    public ApiResponse<?> confirmPayment(Long orderId) {
 
         Order order = orderRepo.findById(orderId)
                 .orElseThrow(() -> new UserNotFoundException("Order not found"));

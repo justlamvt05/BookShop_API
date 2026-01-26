@@ -31,4 +31,7 @@ public interface SaleService {
     ApiResponse<?> getProductImages(String productId);
 
     ApiResponse<?> deleteProductImage(String imageId);
+
+//    ApiResponse<?> getOrderList(int page, int size, String sortBy, String direction,
+//                                String keyword, String status)
 }

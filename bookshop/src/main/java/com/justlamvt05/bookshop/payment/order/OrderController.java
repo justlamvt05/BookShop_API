@@ -28,7 +28,7 @@ public class OrderController {
     }
 
     @PutMapping("/{id}/confirm")
-    public ResponseEntity<ApiResponse<?>> confirm(@PathVariable String id) {
+    public ResponseEntity<ApiResponse<?>> confirm(@PathVariable Long id) {
 
         return ResponseEntity.ok(
                 orderService.confirmPayment(id)
