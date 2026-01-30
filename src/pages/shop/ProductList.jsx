@@ -14,7 +14,7 @@ function ProductList() {
   const [error, setError] = useState("");
   const [addingToCart, setAddingToCart] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
-
+  const [message, setMessage] = useState({ type: "", text: "" });
   // Filter states
   const [searchName, setSearchName] = useState("");
   const [minPrice, setMinPrice] = useState("");
@@ -29,7 +29,12 @@ function ProductList() {
       currency: "VND"
     }).format(price);
   };
-
+  const showSuccess = (text) => {
+    setMessage({ type: "success", text });
+  };
+  const showError = (text) => {
+    setMessage({ type: "danger", text });
+  };
   // Format image URL - handle missing protocol
   const formatImageUrl = (imageUrl) => {
     if (!imageUrl) return "https://via.placeholder.com/250x350?text=No+Image";
@@ -117,7 +122,7 @@ function ProductList() {
 
     try {
       await addToCart(product.productId, 1);
-      setSuccessMessage(`"${product.name}" added to cart!`);
+      showSuccess(`"${product.name}" added to cart!`);
       // Clear success message after 3 seconds
       setTimeout(() => setSuccessMessage(""), 3000);
     } catch (err) {
@@ -135,7 +140,12 @@ function ProductList() {
           {error}
         </div>
       )}
-
+      {/* Message Alert */}
+      {message.text && (
+        <div className={`alert alert-${message.type}`} role="alert">
+          {message.text}
+        </div>
+      )}
       {/* Filter Section */}
       <div className="filter-section">
         <div className="filter-group">

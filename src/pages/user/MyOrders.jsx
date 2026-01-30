@@ -1,8 +1,11 @@
 // pages/user/MyOrders.jsx
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getMyOrders } from "../../service/userService";
 
 function MyOrders() {
+  const navigate = useNavigate();
+
   // State management
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -42,15 +45,15 @@ function MyOrders() {
   const getStatusBadgeClass = (status) => {
     switch (status?.toUpperCase()) {
       case "PENDING":
-        return "bg-warning";
-      case "CONFIRMED":
+        return "bg-warning text-dark";
+      case "PROCESSING":
         return "bg-info";
-      case "SHIPPED":
-        return "bg-primary";
-      case "DELIVERED":
+      case "SUCCESS":
         return "bg-success";
-      case "CANCELLED":
+      case "FAILED":
         return "bg-danger";
+      case "CANCELLED":
+        return "bg-secondary";
       default:
         return "bg-secondary";
     }
@@ -128,27 +131,27 @@ function MyOrders() {
 
                   {/* Order Date */}
                   <td>
-                    {formatDate(order.orderDate)}
+                    {formatDate(order.createdAt)}
                   </td>
 
                   {/* Items Count */}
                   <td>
                     <span className="badge bg-secondary">
-                      {order.items?.length || 0} item(s)
+                      {order.itemsCount || 0} item(s)
                     </span>
                   </td>
 
                   {/* Total Price */}
                   <td>
                     <strong style={{ color: "#e74c3c" }}>
-                      {formatPrice(order.totalPrice || 0)}
+                      {formatPrice(order.totalAmount || 0)}
                     </strong>
                   </td>
 
                   {/* Status */}
                   <td>
-                    <span className={`badge ${getStatusBadgeClass(order.status)}`}>
-                      {order.status || "UNKNOWN"}
+                    <span className={`badge ${getStatusBadgeClass(order.paymentStatus)}`}>
+                      {order.paymentStatus || "UNKNOWN"}
                     </span>
                   </td>
 
@@ -156,19 +159,29 @@ function MyOrders() {
                   <td>
                     <div className="d-flex align-items-center" style={{ gap: "0.5rem" }}>
                       <button
-                        className="btn btn-sm btn-info"
-                        title="View Details"
+                        className={`btn btn-sm ${order.paymentStatus?.toUpperCase() === "PENDING"
+                          ? "btn-warning"
+                          : "btn-info"
+                          }`}
+                        onClick={() => navigate(`/user/orders/${order.orderId}`)}
+                        title={
+                          order.paymentStatus?.toUpperCase() === "PENDING"
+                            ? "Complete Payment"
+                            : "View Details"
+                        }
                       >
-                        View
+                        {order.paymentStatus?.toUpperCase() === "PENDING" ? (
+                          <>
+                            <i className="fa-solid fa-credit-card me-1"></i>
+                            Payment
+                          </>
+                        ) : (
+                          <>
+                            <i className="fa-solid fa-eye me-1"></i>
+                            View
+                          </>
+                        )}
                       </button>
-                      {order.status?.toUpperCase() === "PENDING" && (
-                        <button
-                          className="btn btn-sm btn-danger"
-                          title="Cancel Order"
-                        >
-                          Cancel
-                        </button>
-                      )}
                     </div>
                   </td>
                 </tr>
@@ -197,35 +210,41 @@ function MyOrders() {
         <div className="row mt-4">
           <div className="col-md-4">
             <div className="card shadow">
-              <div className="card-body text-center">
-                <h6 style={{ color: "#7f8c8d" }}>Total Orders</h6>
-                <h3 style={{ color: "#3498db", margin: "0.5rem 0" }}>
-                  {orders.length}
-                </h3>
+              <div className="card-body">
+                <div className="text-center p-3 bg-light rounded">
+                  <p className="text-muted mb-2">Total Orders</p>
+                  <h3 className="mb-0" style={{ color: "#3498db" }}>
+                    {orders.length}
+                  </h3>
+                </div>
               </div>
             </div>
           </div>
 
           <div className="col-md-4">
             <div className="card shadow">
-              <div className="card-body text-center">
-                <h6 style={{ color: "#7f8c8d" }}>Total Spent</h6>
-                <h3 style={{ color: "#27ae60", margin: "0.5rem 0" }}>
-                  {formatPrice(
-                    orders.reduce((sum, order) => sum + (order.totalPrice || 0), 0)
-                  )}
-                </h3>
+              <div className="card-body">
+                <div className="text-center p-3 bg-light rounded">
+                  <p className="text-muted mb-2">Total Spent</p>
+                  <h3 className="mb-0" style={{ color: "#27ae60" }}>
+                    {formatPrice(
+                      orders.reduce((sum, order) => sum + (order.totalAmount || 0), 0)
+                    )}
+                  </h3>
+                </div>
               </div>
             </div>
           </div>
 
           <div className="col-md-4">
             <div className="card shadow">
-              <div className="card-body text-center">
-                <h6 style={{ color: "#7f8c8d" }}>Pending Orders</h6>
-                <h3 style={{ color: "#f39c12", margin: "0.5rem 0" }}>
-                  {orders.filter(o => o.status?.toUpperCase() === "PENDING").length}
-                </h3>
+              <div className="card-body">
+                <div className="text-center p-3 bg-light rounded">
+                  <p className="text-muted mb-2">Pending Orders</p>
+                  <h3 className="mb-0" style={{ color: "#f39c12" }}>
+                    {orders.filter(o => o.paymentStatus?.toUpperCase() === "PENDING").length}
+                  </h3>
+                </div>
               </div>
             </div>
           </div>

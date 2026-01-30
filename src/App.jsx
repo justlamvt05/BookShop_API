@@ -6,10 +6,13 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AdminUserAdd from "./pages/admin/AdminUserAdd";
 import RegisterForm from "./pages/RegisterForm";
 import ProductManagement from "./pages/sale/ProductManagement";
+import OrderManagement from "./pages/sale/OrderManagement";
+import OrderDetail from "./pages/sale/OrderDetail";
 import Profile from "./pages/user/Profile";
 import MyOrders from "./pages/user/MyOrders";
 import Cart from "./pages/user/Cart";
 import Checkout from "./pages/user/Checkout";
+import ViewOrderDetail from "./pages/user/ViewOrderDetail";
 import ProductList from "./pages/shop/ProductList";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -46,6 +49,7 @@ function App() {
               }
             >
               <Route path="orders" element={<MyOrders />} />
+              <Route path="orders/:orderId" element={<ViewOrderDetail />} />
               <Route path="cart" element={<Cart />} />
               <Route path="checkout" element={<Checkout />} />
             </Route>
@@ -70,6 +74,8 @@ function App() {
               }
             >
               <Route path="products" element={<ProductManagement />} />
+              <Route path="orders-list" element={<OrderManagement />} />
+              <Route path="orders/:orderId" element={<OrderDetail />} />
             </Route>
 
           </Routes>

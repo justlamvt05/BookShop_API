@@ -93,6 +93,9 @@ function ProductManagement() {
     const { name, value } = e.target;
     setProductForm((prev) => ({ ...prev, [name]: value }));
   };
+  const handleNavigateToOrders = () => {
+    navigate('/sale/orders-list');
+  };
 
   // Reset product form
   const resetProductForm = () => {
@@ -341,14 +344,23 @@ function ProductManagement() {
           <h2 style={{ marginBottom: "0.5rem" }}>Product Management</h2>
           <p style={{ color: "#7f8c8d" }}>Create, update, and manage product inventory</p>
         </div>
-        <button
-          className="btn btn-success"
-          onClick={handleExportPdf}
-          disabled={loading || products.length === 0}
-          title="Export products to PDF"
-        >
-          📥 Export PDF
-        </button>
+        <div className="d-flex gap-4">
+          <button
+            className="btn btn-success"
+            onClick={handleExportPdf}
+            disabled={loading || products.length === 0}
+            title="Export products to PDF"
+          >
+            📥 Export PDF
+          </button>
+          <button
+            className="btn btn-primary"
+            onClick={handleNavigateToOrders}
+            title="Navigate to Order Management"
+          >
+            → Order List
+          </button>
+        </div>
       </div>
 
       {/* Message Alert */}
