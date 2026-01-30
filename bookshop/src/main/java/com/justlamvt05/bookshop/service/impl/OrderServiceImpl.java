@@ -18,6 +18,8 @@ import com.justlamvt05.bookshop.payload.response.ApiResponse;
 import com.justlamvt05.bookshop.service.OrderService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -27,13 +29,12 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @Transactional
 public class OrderServiceImpl implements OrderService {
-
     private final OrderRepository orderRepo;
-    private final OrderItemRepository orderItemRepo;
     private final ProductRepository productRepo;
     private final UserRepository userRepo;
     private final OrderMapper orderMapper;
-
+    @Value("${qr.url.example}")
+    private String url;
     @Override
     public ApiResponse<?> createOrder(String userId, CreateOrderRequest request) {
         User user = userRepo.findById(userId)
@@ -61,10 +62,9 @@ public class OrderServiceImpl implements OrderService {
             );
         }
         order.setTotalAmount(total);
-
         Order savedOrder = orderRepo.save(order);
 
-        savedOrder.setQrCodeUrl("QR_" + savedOrder.getOrderId());
+        savedOrder.setQrCodeUrl(url);
         savedOrder = orderRepo.save(savedOrder);
 
         return ApiResponse.create(orderMapper.toDto(savedOrder));

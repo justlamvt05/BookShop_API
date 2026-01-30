@@ -95,4 +95,23 @@ public class SaleController {
                 saleService.deleteProductImage(imageId)
         );
     }
+    @GetMapping("/orders-list")
+    public ResponseEntity<?> getOrdersList(@RequestParam(defaultValue = "0") int page,
+                                           @RequestParam(defaultValue = "10") int size,
+                                           @RequestParam(defaultValue = "createdAt") String sortBy,
+                                           @RequestParam(defaultValue = "asc") String direction,
+                                           @RequestParam(required = false) String keyword,
+                                           @RequestParam(required = false) String status){
+        return ResponseEntity.ok(saleService.getOrderList(page, size, sortBy, direction, keyword, status));
+    }
+
+    @PutMapping("/order-status")
+    public ResponseEntity<?> updateOrderStatus(@RequestParam Long orderId, @RequestParam String status) {
+        return ResponseEntity.ok(saleService.updateOrderStatus(orderId, status));
+    }
+
+    @GetMapping("/order-detail")
+    public ResponseEntity<?> getOrderDetail(@RequestParam Long orderId) {
+        return ResponseEntity.ok(saleService.getOrderDetails(orderId));
+    }
 }

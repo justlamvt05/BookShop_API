@@ -14,5 +14,7 @@ public interface UserService {
     ApiResponse<UserProfileDto> updateMyProfile(String userId, UpdateProfileRequest request);
 
     ApiResponse<List<OrderDto>> getMyOrders(String userId);
+
+    ApiResponse<?> getMyOrderDetail(Long orderId);
 }
 

@@ -1,11 +1,15 @@
 package com.justlamvt05.bookshop.service.impl;
 
 import com.justlamvt05.bookshop.domain.dto.ProductReportDto;
+import com.justlamvt05.bookshop.domain.entity.Order;
 import com.justlamvt05.bookshop.domain.entity.Product;
 import com.justlamvt05.bookshop.domain.entity.ProductImage;
+import com.justlamvt05.bookshop.domain.entity.constraint.EPaymentStatus;
 import com.justlamvt05.bookshop.domain.entity.constraint.EStatus;
+import com.justlamvt05.bookshop.domain.repository.OrderRepository;
 import com.justlamvt05.bookshop.domain.repository.ProductImageRepository;
 import com.justlamvt05.bookshop.domain.repository.ProductRepository;
+import com.justlamvt05.bookshop.exception.OrderNotFoundException;
 import com.justlamvt05.bookshop.exception.UserNotFoundException;
 import com.justlamvt05.bookshop.payload.request.ProductImageRequest;
 import com.justlamvt05.bookshop.payload.request.ProductRequest;
@@ -41,6 +45,7 @@ public class SaleServiceImpl implements SaleService {
 
     private final ProductRepository productRepository;
     private final ProductImageRepository productImageRepository;
+    private final OrderRepository orderRepository;
 
     @Override
     public ApiResponse<?> createProduct(ProductRequest request) {
@@ -247,5 +252,38 @@ public class SaleServiceImpl implements SaleService {
 
         productImageRepository.deleteById(imageId);
         return ApiResponse.success("Image deleted");
+    }
+
+    @Override
+    public ApiResponse<?> getOrderList(int page, int size, String sortBy, String direction, String keyword, String status) {
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+        EPaymentStatus eStatus = null;
+        if(!Objects.isNull(status)) {
+            eStatus = EPaymentStatus.valueOf(status);
+        }
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Order> result = orderRepository.findAllOrders(pageable, keyword, eStatus);
+        return ApiResponse.success(result);
+    }
+
+    @Override
+    public ApiResponse<?> updateOrderStatus(Long orderId, String status) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundException("Order not found"));
+        EPaymentStatus eStatus = null;
+        if(!Objects.isNull(status)) {
+            eStatus = EPaymentStatus.valueOf(status);
+            order.setPaymentStatus(eStatus);
+            orderRepository.save(order);
+        }
+        return ApiResponse.success("Order updated successfully");
+
+    }
+
+    @Override
+    public ApiResponse<?> getOrderDetails(Long orderId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException("Order not found"));
+        return ApiResponse.success(order);
     }
 }

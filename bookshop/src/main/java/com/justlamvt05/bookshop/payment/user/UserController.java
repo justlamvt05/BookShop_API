@@ -44,5 +44,9 @@ public class UserController {
                 userService.getMyOrders(user.getUserId())
         );
     }
+    @GetMapping("/my-order-detail")
+    public ResponseEntity<ApiResponse<?>> myOrderDetail(@RequestParam Long orderId) {
+        return ResponseEntity.ok(userService.getMyOrderDetail(orderId));
+    }
 }
 

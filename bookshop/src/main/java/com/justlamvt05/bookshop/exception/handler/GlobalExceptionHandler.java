@@ -1,10 +1,7 @@
 package com.justlamvt05.bookshop.exception.handler;
 
 
-import com.justlamvt05.bookshop.exception.DuplicateFieldException;
-import com.justlamvt05.bookshop.exception.RoleNotFoundException;
-import com.justlamvt05.bookshop.exception.UserNotFoundException;
-import com.justlamvt05.bookshop.exception.UnauthorizedException;
+import com.justlamvt05.bookshop.exception.*;
 import com.justlamvt05.bookshop.payload.response.ApiCode;
 import com.justlamvt05.bookshop.payload.response.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -78,7 +75,11 @@ public class GlobalExceptionHandler {
         log.error("IllegalArgumentException: {}", message);
         return ResponseEntity.badRequest().body(ApiResponse.error(ApiCode.VALIDATION_ERROR, message));
     }
+    @ExceptionHandler({OrderNotFoundException.class})
+    public ResponseEntity<ApiResponse<Object>> handleEntityNotFoundException(OrderNotFoundException e) {
 
-
+        log.error("OrderNotFoundException: {}", "Order not found");
+        return ResponseEntity.badRequest().body(ApiResponse.error(ApiCode.NOT_FOUND, "Order not found"));
+    }
 }
 

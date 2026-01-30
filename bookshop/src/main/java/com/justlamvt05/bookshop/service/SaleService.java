@@ -32,6 +32,10 @@ public interface SaleService {
 
     ApiResponse<?> deleteProductImage(String imageId);
 
-//    ApiResponse<?> getOrderList(int page, int size, String sortBy, String direction,
-//                                String keyword, String status)
+    ApiResponse<?> getOrderList(int page, int size, String sortBy, String direction,
+                                String keyword, String status);
+
+    ApiResponse<?> updateOrderStatus(Long orderId, String status);
+
+    ApiResponse<?> getOrderDetails(Long orderId);
 }

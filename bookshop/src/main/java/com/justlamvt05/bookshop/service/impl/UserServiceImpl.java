@@ -3,9 +3,11 @@ package com.justlamvt05.bookshop.service.impl;
 import com.justlamvt05.bookshop.domain.dto.OrderDto;
 import com.justlamvt05.bookshop.domain.dto.UpdateProfileRequest;
 import com.justlamvt05.bookshop.domain.dto.UserProfileDto;
+import com.justlamvt05.bookshop.domain.entity.Order;
 import com.justlamvt05.bookshop.domain.entity.User;
 import com.justlamvt05.bookshop.domain.repository.OrderRepository;
 import com.justlamvt05.bookshop.domain.repository.UserRepository;
+import com.justlamvt05.bookshop.exception.OrderNotFoundException;
 import com.justlamvt05.bookshop.exception.UserNotFoundException;
 import com.justlamvt05.bookshop.mapper.OrderMapper;
 import com.justlamvt05.bookshop.mapper.UserMapper;
@@ -60,6 +62,12 @@ public class UserServiceImpl implements UserService {
         );
 
         return ApiResponse.success(orders);
+    }
+
+    @Override
+    public ApiResponse<?> getMyOrderDetail(Long orderId) {
+        Order order = orderRepo.findById(orderId).orElseThrow(() -> new OrderNotFoundException("Order not found"));
+        return ApiResponse.success(order);
     }
 }
 
