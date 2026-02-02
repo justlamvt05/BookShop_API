@@ -14,25 +14,25 @@ Architecture: Layered & scalable
 
 BookShop
 
-├── backend (Spring Boot)
+    ├── backend (Spring Boot)
 
-│   └── src/main/java/com.justlamvt05.bookshop
+    │   └── src/main/java/com.justlamvt05.bookshop
 
-│       ├── domain
+    │       ├── domain
 
-│       ├── payload
+    │       ├── payload
 
-│       ├── mapper
+    │       ├── mapper
 
-│       ├── service
+    │       ├── service
 
-│       ├── payment
+    │       ├── payment
 
-│       ├── security
+    │       ├── security
 
-│       ├── exception
+    │       ├── exception
 
-│       └── BookshopApplication.java
+    │       └── BookshopApplication.java
 
 │
 ├── frontend (React + Vite)
@@ -158,6 +158,7 @@ Payment gateway integration
 
 Vuong Thanh Lam
 GitHub: justlamvt05
+
 
 
 
