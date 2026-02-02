@@ -38,19 +38,13 @@ BookShop
 📂 Backend Package Structure
 com.justlamvt05.bookshop
 
-├── domain        # Entities & domain models
-
-├── payload       # Request / Response DTOs
-
-├── mapper        # Entity ↔ DTO mapping
-
-├── service       # Business logic
-
-├── payment       # Payment-related logic
-
-├── security      # Authentication & authorization
-
-├── exception     # Global exception handling
+    ├── domain        # Entities & domain models
+    ├── payload       # Request / Response DTOs
+    ├── mapper        # Entity ↔ DTO mapping
+    ├── service       # Business logic
+    ├── payment       # Payment-related logic
+    ├── security      # Authentication & authorization
+    ├── exception     # Global exception handling
 
 🔧 Backend Features
 
@@ -140,6 +134,7 @@ Payment gateway integration
 
 Vuong Thanh Lam
 GitHub: justlamvt05
+
 
 
 
