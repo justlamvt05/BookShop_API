@@ -1,4 +1,4 @@
-📚 BookShop – Full Stack Application
+    📚 BookShop – Full Stack Application
 
 BookShop is a full-stack web application for managing an online book shop, built with Spring Boot on the backend and React (Vite) on the frontend.
 📌 Overview
@@ -15,42 +15,24 @@ Architecture: Layered & scalable
 BookShop
 
     ├── backend (Spring Boot)
-
     │   └── src/main/java/com.justlamvt05.bookshop
-
     │       ├── domain
-
     │       ├── payload
-
     │       ├── mapper
-
     │       ├── service
-
     │       ├── payment
-
     │       ├── security
-
     │       ├── exception
-
     │       └── BookshopApplication.java
-
-│
-├── frontend (React + Vite)
-
-│   ├── src
-
-│   │   ├── components
-
-│   │   ├── pages
-
-│   │   ├── services
-
-│   │   ├── api
-
-│   │   └── App.jsx
-
-│   └── vite.config.js
-
+    │
+    ├── frontend (React + Vite)
+    │   ├── src
+    │   │   ├── components
+    │   │   ├── pages
+    │   │   ├── services
+    │   │   ├── api
+    │   │   └── App.jsx
+    │   └── vite.config.js
 
 🔙 Backend – Spring Boot
 📂 Backend Package Structure
@@ -158,6 +140,7 @@ Payment gateway integration
 
 Vuong Thanh Lam
 GitHub: justlamvt05
+
 
 
 
