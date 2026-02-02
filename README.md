@@ -12,7 +12,44 @@ Frontend: React + Vite
 Architecture: Layered & scalable
 🧩 Project Structure
 
-<img width="855" height="570" alt="image" src="https://github.com/user-attachments/assets/b3ce9562-03b8-4b61-a6e2-37daed5fb171" />
+BookShop
+
+├── backend (Spring Boot)
+
+│   └── src/main/java/com.justlamvt05.bookshop
+
+│       ├── domain
+
+│       ├── payload
+
+│       ├── mapper
+
+│       ├── service
+
+│       ├── payment
+
+│       ├── security
+
+│       ├── exception
+
+│       └── BookshopApplication.java
+
+│
+├── frontend (React + Vite)
+
+│   ├── src
+
+│   │   ├── components
+
+│   │   ├── pages
+
+│   │   ├── services
+
+│   │   ├── api
+
+│   │   └── App.jsx
+
+│   └── vite.config.js
 
 
 🔙 Backend – Spring Boot
@@ -121,5 +158,6 @@ Payment gateway integration
 
 Vuong Thanh Lam
 GitHub: justlamvt05
+
 
 
