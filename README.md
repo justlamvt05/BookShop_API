@@ -81,8 +81,7 @@ DELETE	/api/books/{id}	Delete book
 
 
 ▶️ How to Run the Project
-1️⃣ Backend
-cd backend
+git clone -b Develop https://github.com/justlamvt05/BookShop_API
 mvn clean install
 mvn spring-boot:run
 
@@ -92,7 +91,7 @@ Backend runs at:
 http://localhost:8080
 
 2️⃣ Frontend
-cd frontend
+git clone -b Develop-fe https://github.com/justlamvt05/BookShop_API
 npm install
 npm run dev
 
@@ -134,6 +133,7 @@ Payment gateway integration
 
 Vuong Thanh Lam
 GitHub: justlamvt05
+
 
 
 
