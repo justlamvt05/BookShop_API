@@ -32,15 +32,15 @@ API Testing: Postman
 
 📂 Project Structure
 
-src/main/java/com/bookshop
-│
-├── controller      # Handle API requests
-├── service         # Business logic
-├── repository      # Data access layer (JPA)
-├── entity          # Database entities
-├── dto             # Data Transfer Objects
-├── config          # Security & app configurations
-└── exception       # Custom exceptions
+    src/main/java/com/bookshop
+    │
+    ├── controller      # Handle API requests
+    ├── service         # Business logic
+    ├── repository      # Data access layer (JPA)
+    ├── entity          # Database entities
+    ├── dto             # Data Transfer Objects
+    ├── config          # Security & app configurations
+    └── exception       # Custom exceptions
 🚀 Features
 
 👤 User
